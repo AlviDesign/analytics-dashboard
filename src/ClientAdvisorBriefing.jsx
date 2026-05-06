@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { ShoppingBag, Gem, Scissors } from 'lucide-react'
 
 // ─── Global CSS (injected once) ──────────────────────────────────────────────
 
@@ -113,16 +114,6 @@ const GLOBAL_CSS = `
   }
   .acc-label.open { color: var(--text); }
 
-  .presenter-panel {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    width: 360px;
-    background: var(--bg-warm);
-    border: 1px solid var(--border-strong);
-    z-index: 100;
-  }
-
   .ghost-btn {
     font-family: var(--font-sans);
     font-size: 11px;
@@ -188,7 +179,7 @@ const APPOINTMENTS = [
     time: '10:30',
     name: 'Amira K.',
     full: 'Amira Khalil',
-    tier: 'Diamond VIP',
+    tier: 'VIP Plus',
     note: 'Pre-event styling — Lake Como, late June',
     cities: 'Paris · Dubai',
     flagged: true,
@@ -218,7 +209,7 @@ const APPOINTMENTS = [
 const CLIENT = {
   name: 'Amira Khalil',
   short: 'Amira K.',
-  tier: 'Diamond VIP',
+  tier: 'VIP Plus',
   since: '2018',
   advisor: 'Sophie Laurent',
   cities: ['Paris (primary)', 'Dubai (seasonal)'],
@@ -239,7 +230,7 @@ const CLIENT = {
     { year: '2022', item: 'Victoire bracelet — yellow gold', cat: 'Fine Jewellery', tier: '●●' },
     { year: '2022', item: 'Tailored trousers — chalk (×2)', cat: 'Ready-to-wear', tier: '●' },
   ],
-  privacy: 'Client prefers no written profile shared externally. All AI-assisted preparation is internal only and never surfaced to the client. The advisor retains full discretion over what is raised in-session.',
+  privacy: 'Client prefers no written profile shared externally. All curated preparation is internal only and never surfaced to the client. The advisor retains full discretion over what is raised in-session.',
 }
 
 const BRIEF = [
@@ -284,7 +275,7 @@ Do not mention waitlists or scarcity unless she enquires directly.
 Do not suggest she might want to "move quickly" on any piece.
 Do not photograph looks for internal sharing without explicit consent.
 
-Governance note: this brief was generated with AI assistance and reflects purchase data and advisor notes only. It has not been validated against any external source. Advisor judgement supersedes all suggestions.`,
+Governance note: this brief was prepared with advisory assistance and reflects purchase data and advisor notes only. It has not been validated against any external source. Advisor judgement supersedes all suggestions.`,
   },
 ]
 
@@ -311,23 +302,6 @@ Should anything else come to mind as you prepare for the gathering, I am always 
 
 With warmth,
 Sophie`
-
-const PRESENTER_SCRIPT = `PULSE · Client Advisor Briefing — 60-Second Demo Script
-
-0 – 10s   OPEN
-"This is an internal briefing tool for a luxury sales advisor preparing for a VIP client appointment. It is not a CRM, not a chatbot. It is a briefing system — designed to feel like reading a well-prepared dossier, not using software."
-
-10 – 25s   APPOINTMENTS → PROFILE
-"The advisor sees today's three appointments. She selects Amira K., a Diamond VIP client visiting from Paris. The profile shows preferences, purchase history, and a privacy note — everything visible to the advisor only. Nothing is surfaced to the client."
-
-25 – 40s   AI BRIEF
-"The AI Advisor Brief synthesises five lenses: relationship insight, what to prepare, product directions, conversation cues, and discretion notes. The AI advises. The advisor decides. That distinction is designed in — it is not a disclaimer."
-
-40 – 52s   CHECKLIST + FOLLOW-UP
-"The prep checklist is boutique-operational: rooms, selections, logistics. The follow-up draft is a starting point, not a finished message — the note says so explicitly."
-
-52 – 60s   CLOSE
-"The design principle is minimal: hairline borders, two typefaces, no colour noise. The product principle matches it. As the brief puts it: 'The goal is not more data. The goal is just enough insight to make the human interaction feel instinctive.'"`
 
 // ─── Shared primitives ────────────────────────────────────────────────────────
 
@@ -519,25 +493,25 @@ function ClientProfileScreen({ onNext }) {
       <div style={{ padding: '28px 0' }}>
         <Serif as="h2" size={20} style={{ marginBottom: '20px' }}>Purchase History</Serif>
         <div style={{ borderTop: '1px solid var(--border)' }}>
-          {c.history.map((p, i) => (
-            <div key={i} style={{
-              display: 'grid',
-              gridTemplateColumns: '52px 1fr 130px 32px',
-              gap: '16px',
-              padding: '11px 0',
-              borderBottom: '1px solid var(--border)',
-              alignItems: 'center',
-            }}>
-              <Label>{p.year}</Label>
-              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '13px', color: 'var(--text)' }}>{p.item}</p>
-              <Label>{p.cat}</Label>
-              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '11px', color: 'var(--accent)', letterSpacing: '0.05em' }}>{p.tier}</span>
-            </div>
-          ))}
+          {c.history.map((p, i) => {
+            const CatIcon = p.cat === 'Bag' ? ShoppingBag : p.cat === 'Fine Jewellery' ? Gem : Scissors
+            return (
+              <div key={i} style={{
+                display: 'grid',
+                gridTemplateColumns: '52px 1fr 130px 32px',
+                gap: '16px',
+                padding: '11px 0',
+                borderBottom: '1px solid var(--border)',
+                alignItems: 'center',
+              }}>
+                <Label>{p.year}</Label>
+                <p style={{ fontFamily: 'var(--font-sans)', fontSize: '13px', color: 'var(--text)' }}>{p.item}</p>
+                <Label>{p.cat}</Label>
+                <CatIcon size={15} style={{ color: 'var(--accent)' }} strokeWidth={1.5} />
+              </div>
+            )
+          })}
         </div>
-        <p style={{ fontFamily: 'var(--font-sans)', fontSize: '11px', color: 'var(--text-3)', marginTop: '10px' }}>
-          ● indicates relative tier; exact figures are not displayed
-        </p>
       </div>
 
       <Hr my={0} />
@@ -550,12 +524,12 @@ function ClientProfileScreen({ onNext }) {
         </p>
       </div>
 
-      <GhostBtn onClick={onNext}>View AI Brief →</GhostBtn>
+      <GhostBtn onClick={onNext}>View Advisor Brief →</GhostBtn>
     </div>
   )
 }
 
-// ─── Screen 3: AI Brief ───────────────────────────────────────────────────────
+// ─── Screen 3: Advisor Brief ─────────────────────────────────────────────────
 
 function Accordion({ title, body, defaultOpen = false }) {
   const [open, setOpen] = useState(defaultOpen)
@@ -591,7 +565,7 @@ const GUARDRAILS = [
   },
   {
     title: 'Advisor control',
-    body: 'Every suggestion is a prompt, not an instruction. The advisor decides what is raised, when, and how. The AI has no visibility into the in-appointment conversation.',
+    body: 'Every suggestion is a prompt, not an instruction. The advisor decides what is raised, when, and how. The advisory system has no visibility into the in-appointment conversation.',
   },
   {
     title: 'Assistive, not directive',
@@ -599,17 +573,17 @@ const GUARDRAILS = [
   },
   {
     title: 'Client transparency',
-    body: 'Clients are informed at account creation that purchase data may be used to personalise service. No AI output is shared with or disclosed to the client.',
+    body: 'Clients are informed at account creation that purchase data may be used to personalise service. No curated recommendations are shared with or disclosed to the client.',
   },
 ]
 
-function AIBriefScreen({ onNext }) {
+function AdvisorBriefScreen({ onNext }) {
   return (
     <div className="">
-      <Label style={{ display: 'block', marginBottom: '10px' }}>AI Advisor Brief · Amira K.</Label>
+      <Label style={{ display: 'block', marginBottom: '10px' }}>Advisor Brief · Amira K.</Label>
       <Serif as="h1" size={34} style={{ marginBottom: '6px' }}>Pre-Appointment Brief</Serif>
       <p style={{ fontFamily: 'var(--font-sans)', fontSize: '13px', color: 'var(--text-3)', marginBottom: '36px' }}>
-        AI-assisted · Internal use only · Advisor discretion applies
+        Curated Insight · Internal use only · Advisor discretion applies
       </p>
 
       <Hr my={0} />
@@ -825,60 +799,17 @@ function FollowUpScreen() {
   )
 }
 
-// ─── Presenter Mode Panel ─────────────────────────────────────────────────────
-
-function PresenterPanel({ onClose }) {
-  return (
-    <div className="presenter-panel">
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '14px 18px',
-        borderBottom: '1px solid var(--border)',
-      }}>
-        <Label>Presenter Mode · 60s Script</Label>
-        <button
-          onClick={onClose}
-          style={{
-            fontFamily: 'var(--font-sans)',
-            fontSize: '18px',
-            color: 'var(--text-3)',
-            lineHeight: 1,
-            padding: '0 2px',
-          }}
-          aria-label="Close presenter panel"
-        >
-          ×
-        </button>
-      </div>
-      <div style={{
-        padding: '20px 18px',
-        maxHeight: '420px',
-        overflowY: 'auto',
-        fontFamily: 'var(--font-sans)',
-        fontSize: '12.5px',
-        color: 'var(--text-2)',
-        lineHeight: 1.85,
-        whiteSpace: 'pre-wrap',
-      }}>
-        {PRESENTER_SCRIPT}
-      </div>
-    </div>
-  )
-}
-
 // ─── Navigation ───────────────────────────────────────────────────────────────
 
 const NAV = [
   { id: 'appointments', label: 'Appointments' },
   { id: 'profile',      label: 'Client Profile' },
-  { id: 'brief',        label: 'AI Brief' },
+  { id: 'brief',        label: 'Advisor Brief' },
   { id: 'checklist',    label: 'Prep Checklist' },
   { id: 'followup',     label: 'Follow-Up' },
 ]
 
-function TopNav({ screen, setScreen, dark, toggleDark, presenter, togglePresenter }) {
+function TopNav({ screen, setScreen, dark, toggleDark }) {
   return (
     <header style={{
       position: 'sticky',
@@ -928,23 +859,6 @@ function TopNav({ screen, setScreen, dark, toggleDark, presenter, togglePresente
       {/* Controls */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '18px', paddingLeft: '20px', borderLeft: '1px solid var(--border)' }}>
         <button
-          onClick={togglePresenter}
-          style={{
-            fontFamily: 'var(--font-sans)',
-            fontSize: '10px',
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            color: presenter ? 'var(--accent)' : 'var(--text-3)',
-            padding: '2px 0',
-            borderBottom: presenter ? '1px solid var(--accent)' : '1px solid transparent',
-            transition: 'color 0.15s',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          Presenter
-        </button>
-
-        <button
           className={`toggle-pill${dark ? ' on' : ''}`}
           onClick={toggleDark}
           aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
@@ -972,7 +886,6 @@ function StyleInjector() {
 export default function ClientAdvisorBriefing() {
   const [screen, setScreen] = useState('appointments')
   const [dark, setDark] = useState(false)
-  const [presenter, setPresenter] = useState(false)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
@@ -986,8 +899,6 @@ export default function ClientAdvisorBriefing() {
         setScreen={setScreen}
         dark={dark}
         toggleDark={() => setDark(d => !d)}
-        presenter={presenter}
-        togglePresenter={() => setPresenter(p => !p)}
       />
       <main style={{ maxWidth: '800px', margin: '0 auto', padding: '56px 40px 100px' }}>
         <div key={screen} className="screen-enter">
@@ -998,7 +909,7 @@ export default function ClientAdvisorBriefing() {
             <ClientProfileScreen onNext={() => setScreen('brief')} />
           )}
           {screen === 'brief' && (
-            <AIBriefScreen onNext={() => setScreen('checklist')} />
+            <AdvisorBriefScreen onNext={() => setScreen('checklist')} />
           )}
           {screen === 'checklist' && (
             <PrepChecklistScreen onNext={() => setScreen('followup')} />
@@ -1006,7 +917,6 @@ export default function ClientAdvisorBriefing() {
           {screen === 'followup' && <FollowUpScreen />}
         </div>
       </main>
-      {presenter && <PresenterPanel onClose={() => setPresenter(false)} />}
     </>
   )
 }
